@@ -44,6 +44,7 @@ help:
 	@ echo "Targets:"
 	@ echo "  build: Build the kernel"
 	@ echo "  clean: Clean the build"
+	@ echo "  re: Clean and build the kernel"
 	@ echo "  run: Run the kernel"
 	@ echo "  help: Show this message"
 
