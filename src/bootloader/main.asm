@@ -24,7 +24,6 @@ check_multiboot2_header:
 .check_multiboot2_header_error:
     mov al, "M"                            ; Store "M" in al register (error code)
     jmp error                              ; if the magic number is not present, print an error message
-    ret
 
 check_cpuid:
     pushfd                                 ; push the EFLAGS register onto the stack
@@ -39,6 +38,7 @@ check_cpuid:
     popfd                                  ; pop the original EFLAGS register into the EFLAGS register
     cmp eax, ecx                           ; compare the original and modified EFLAGS registers
     je .no_cpuid                           ; if the ID bit is not toggled, the CPU does not support CPUID
+    ret
 .no_cpuid:
     mov al, "C"                            ; Store "C" in al register (error code)
     jmp error                              ; print an error message
@@ -93,7 +93,8 @@ enable_paging:
 error:
     ; print "ERR: X" to the top left corner of the screen
     mov dword [0xb8000], 0x4f524f45         ; E
-    mov dword [0xb8004], 0x4f3a4f52         ; RR:
+    mov dword [0xb8004], 0x4f3a4f52         ; RR
+    mov dword [0xb8008], 0x4f204f20         ;
     mov byte [0xb800a], al                  ; print the error code
     hlt                                     ; halt the CPU
 
@@ -104,8 +105,6 @@ page_L4_table:
 page_L3_table:
     resb 4096                           ; 4 KiB page table
 page_L2_table:
-    resb 4096                           ; 4 KiB page table
-page_L1_table:
     resb 4096                           ; 4 KiB page table
 
 stack_bottom:

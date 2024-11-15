@@ -3,7 +3,6 @@
 //
 
 #include "print.h"
-#include <stddef.h>
 
 const static size_t VGA_WIDTH = 80;
 const static size_t VGA_HEIGHT = 25;
@@ -13,7 +12,7 @@ struct Character {
     uint8_t color;
 };
 
-struct Character* buffer = (struct Char*) 0xB8000;
+struct Character* buffer = (struct Character*) 0xB8000;
 size_t terminal_row = 0;
 size_t terminal_column = 0;
 uint8_t terminal_color = PRINT_COLOR_YELLOW | PRINT_COLOR_BLACK << 4;
