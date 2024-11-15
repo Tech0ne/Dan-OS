@@ -1,5 +1,6 @@
-SRCS =	src/bootloader/header.asm 	\
-		src/bootloader/main.asm
+SRCS =	src/bootloader/header.asm 		\
+		src/bootloader/main.asm 		\
+		src/bootloader/main64.asm
 ASM_PATH = src/bootloader/%.asm
 OBJ_PATH = obj/%.o
 OBJS = $(patsubst $(ASM_PATH), $(OBJ_PATH), $(SRCS))
