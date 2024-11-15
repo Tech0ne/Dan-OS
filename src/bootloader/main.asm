@@ -41,7 +41,7 @@ check_cpuid:
     je .no_cpuid                           ; if the ID bit is not toggled, the CPU does not support CPUID
 .no_cpuid:
     mov al, "C"                            ; Store "C" in al register (error code)
-    jmp error                             ; print an error message
+    jmp error                              ; print an error message
 
 check_long_mode:
     mov eax, 0x80000000                    ; CPUID function to check for long mode support
@@ -64,7 +64,7 @@ setup_page_tables:
     mov eax, page_L2_table                 ; load the address of the L2 page table into eax
     or eax, 0b11                           ; set the present and read/write flags
     mov [page_L3_table], eax               ; store the address of the L2 page table in the L3 page table
-    mov ecx, 0                             ; clear the ecx register
+    xor ecx, ecx                           ; clear the ecx register
 .loop:
     mov eax, 0x200000                      ; load the address of the L1 page table into eax
     mul ecx                                ; multiply the ecx register by 2 MiB
@@ -91,10 +91,9 @@ enable_paging:
     ret
 
 error:
-    ; print "ERROR" to the top left corner of the screen
-    mov dword [0xb8000], 0x2f4f2f45         ; E
-    mov dword [0xb8004], 0x2f524f52         ; R
-    mov dword [0xb8008], 0x2f4f2f52         ; R
+    ; print "ERR: X" to the top left corner of the screen
+    mov dword [0xb8000], 0x4f524f45         ; E
+    mov dword [0xb8004], 0x4f3a4f52         ; RR:
     mov byte [0xb800a], al                  ; print the error code
     hlt                                     ; halt the CPU
 
