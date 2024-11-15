@@ -5,7 +5,7 @@ bits 32
 
 start:
     mov esp, stack_top                      ; set the stack pointer
-    call check_multiboot2_header            ; check the Multiboot2 header
+    call check_multiboot                    ; check the Multiboot2 header
     call check_cpuid                        ; check if the CPU supports CPUID
     call check_long_mode                    ; check if the CPU supports long mode
 
@@ -17,11 +17,11 @@ start:
 
     hlt                                     ; halt the CPU
 
-check_multiboot2_header:
+check_multiboot:
     cmp eax, 0x36d76289                    ; Multiboot2 magic number
-    jne .check_multiboot2_header_error     ; if the magic number is not present, print an error message
+    jne .no_multiboot                      ; if the magic number is not present, print an error message
     ret
-.check_multiboot2_header_error:
+.no_multiboot:
     mov al, "M"                            ; Store "M" in al register (error code)
     jmp error                              ; if the magic number is not present, print an error message
 
@@ -58,30 +58,30 @@ check_long_mode:
     jmp error                             ; print an error message
 
 setup_page_tables:
-    mov eax, page_L3_table                 ; load the address of the L3 page table into eax
+    mov eax, page_table_l3                 ; load the address of the L3 page table into eax
     or eax, 0b11                           ; set the present and read/write flags
-    mov [page_L4_table], eax               ; store the address of the L3 page table in the L4 page table
-    mov eax, page_L2_table                 ; load the address of the L2 page table into eax
+    mov [page_table_l4], eax               ; store the address of the L3 page table in the L4 page table
+    mov eax, page_table_l2                 ; load the address of the L2 page table into eax
     or eax, 0b11                           ; set the present and read/write flags
-    mov [page_L3_table], eax               ; store the address of the L2 page table in the L3 page table
+    mov [page_table_l3], eax               ; store the address of the L2 page table in the L3 page table
     xor ecx, ecx                           ; clear the ecx register
 .loop:
     mov eax, 0x200000                      ; load the address of the L1 page table into eax
     mul ecx                                ; multiply the ecx register by 2 MiB
-    mov eax, 0b10000011                    ; set the present, read/write, and user/supervisor flags
-    mov [page_L2_table + ecx * 8], eax     ; store the address of the L1 page table in the L2 page table
+    or eax, 0b10000011                     ; set the present, read/write, and user/supervisor flags
+    mov [page_table_l2 + ecx * 8], eax     ; store the address of the L1 page table in the L2 page table
     inc ecx                                ; set the ecx register to 1
     cmp ecx, 512                           ; shift the ecx register left by 512 bits
     jne .loop                              ; loop until the ecx register is equal to 512
     ret
 
 enable_paging:
-    mov eax, page_L4_table                 ; load the address of the L4 page table into eax
+    mov eax, page_table_l4                 ; load the address of the L4 page table into eax
     mov cr3, eax                           ; store the address of the L4 page table in the CR3 register
     mov eax, cr4                           ; load the CR4 register into eax
     or eax, 1 << 5                         ; set the PAE flag in the CR4 register
     mov cr4, eax                           ; store the modified CR4 register in the CR4 register
-    mov eax, 0xC0000080                    ; load the EFER MSR address into eax
+    mov ecx, 0xC0000080                    ; load the EFER MSR address into eax
     rdmsr                                  ; read the EFER MSR
     or eax, 1 << 8                         ; set the LME flag in the EFER MSR
     wrmsr                                  ; write the modified EFER MSR
@@ -100,11 +100,11 @@ error:
 
 section .bss
 align 4096
-page_L4_table:
+page_table_l4:
     resb 4096                           ; 4 KiB page table
-page_L3_table:
+page_table_l3:
     resb 4096                           ; 4 KiB page table
-page_L2_table:
+page_table_l2:
     resb 4096                           ; 4 KiB page table
 
 stack_bottom:

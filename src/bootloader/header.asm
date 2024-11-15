@@ -8,5 +8,4 @@ boot_start:
     dw 0
     dw 0
     dd 8                                                            ; header address
-
 boot_end:
