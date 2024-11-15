@@ -1,8 +1,8 @@
 global start
 extern long_mode_start
+
 section .text
 bits 32
-
 start:
     mov esp, stack_top                      ; set the stack pointer
     call check_multiboot                    ; check the Multiboot2 header
@@ -64,7 +64,7 @@ setup_page_tables:
     mov eax, page_table_l2                 ; load the address of the L2 page table into eax
     or eax, 0b11                           ; set the present and read/write flags
     mov [page_table_l3], eax               ; store the address of the L2 page table in the L3 page table
-    xor ecx, ecx                           ; clear the ecx register
+    mov ecx, 0                           ; clear the ecx register
 .loop:
     mov eax, 0x200000                      ; load the address of the L1 page table into eax
     mul ecx                                ; multiply the ecx register by 2 MiB
@@ -106,7 +106,6 @@ page_table_l3:
     resb 4096                           ; 4 KiB page table
 page_table_l2:
     resb 4096                           ; 4 KiB page table
-
 stack_bottom:
     resb 4096 * 4                       ; 4 MiB stack
 stack_top:
@@ -115,7 +114,7 @@ section .rodata
 gdt64:
     dq 0                                ; null descriptor
 .code_segment: equ $ - gdt64
-    dq (1 << 43) | (1 << 44) | (1 << 53)           ; code descriptor
+    dq (1 << 43) | (1 << 44) | (1 << 47) |  (1 << 53)   ; code descriptor
 .pointer:
     dw $ - gdt64 - 1                    ; size of the GDT - 1
     dq gdt64                            ; address of the GDT
