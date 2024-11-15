@@ -76,3 +76,15 @@ void print_str(char* str) {
 void print_set_color(uint8_t foreground, uint8_t background) {
     terminal_color = foreground + (background << 4);
 }
+
+void print_middle_screen(char* str, int length) {
+    size_t x = (VGA_WIDTH - length) / 2;
+    size_t y = VGA_HEIGHT / 2;
+
+    for (size_t i = 0; i < length; i++) {
+        buffer[x + i + VGA_WIDTH * y] = (struct Character) {
+            .c = (uint8_t)str[i],
+            .color = terminal_color,
+        };
+    }
+}
