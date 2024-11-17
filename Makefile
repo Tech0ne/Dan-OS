@@ -15,7 +15,7 @@ OBJS 		= 	$(ASM_OBJS) $(KERNEL_OBJS) $(PRINT_OBJS)
 
 BIN 		= 	target/x86_64/iso/boot/kernel.bin
 LINKER 		= 	src/linker/linker.ld
-ISO 		= 	build/x86_64/kernel.iso
+ISO 		= 	build/x86_64/DanOs.iso
 ISO_TARGET 	= 	target/x86_64/iso
 BUILD 		= 	build/x86_64
 TRASH 		= 	obj build $(BIN)
