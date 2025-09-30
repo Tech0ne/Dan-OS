@@ -62,7 +62,7 @@ void tty_putchar(char c) {
 }
 
 void tty_putstr(const char* data) {
-    for (int i = 0; i < strlength(data); i++)
+    for (int i = 0; i < strlen(data); i++)
         tty_putchar(data[i]);
 }
 

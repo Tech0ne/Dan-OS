@@ -7,6 +7,6 @@
 
   #include <stddef.h>
 
-  int strlength(const char* str);
+  int strlen(const char* str);
 
 #endif //STR_H
