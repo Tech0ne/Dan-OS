@@ -7,6 +7,7 @@
 
 #include "keyboard.h"
 #include "tty.h"
+#include "shell.h"
 
 extern void ioport_out(unsigned short port, unsigned char value);
 extern unsigned char ioport_in(unsigned short port);
@@ -88,6 +89,7 @@ void handle_keyboard_interrupt(void) {
         if (keycode < 0 || keycode >= 128)
             return;
         tty_putchar(keyboard_map[keycode]);
+        add_to_buffer(keyboard_map[keycode]);
     }
 }
 

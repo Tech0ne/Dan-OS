@@ -21,6 +21,20 @@ static inline uint16_t vga_entry(unsigned char uc, uint8_t color) {
     return (uint16_t) uc | (uint16_t) color << 8;
 }
 
+void tty_cursor_backspace(size_t count) {
+    while (count-- > 0) {
+        if (tty_column == 0) {
+            if (tty_row > 0) {
+                tty_row--;
+                tty_column = VGA_WIDTH - 1;
+            }
+        } else {
+            tty_column--;
+        }
+        tty_putchar_at(' ', tty_color, tty_column, tty_row);
+    }
+}
+
 void tty_init(void) {
     tty_row = 0;
     tty_column = 0;
@@ -55,10 +69,11 @@ void tty_putchar_at(unsigned char c, uint8_t color, size_t x, size_t y) {
 void tty_putchar(char c) {
     unsigned char uc = c;
     tty_putchar_at(uc, tty_color, tty_column, tty_row);
-    if (++tty_column == VGA_WIDTH)
+    if (++tty_column == VGA_WIDTH) {
         tty_column = 0;
-    if (++tty_row == VGA_HEIGHT)
-        tty_row = 0;
+        if (++tty_row == VGA_HEIGHT)
+            tty_row = 0;
+    }
 }
 
 void tty_putstr(const char* data) {

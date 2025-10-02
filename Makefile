@@ -6,6 +6,7 @@ STR_SRCS 	=	$(wildcard src/kernel/string/*.c)
 IDT_SRCS 	=	$(wildcard src/kernel/idt/*.c)
 KEYBOARD_SRCS =	$(wildcard src/kernel/keyboard/*.c)
 TIMER_SRCS  =   $(wildcard src/kernel/timer/*.c)
+SHELL_SRCS  =   $(wildcard src/kernel/shell/*.c)
 
 ASM_PATH 	= 	src/bootloader/%.asm
 KERNEL_PATH = 	src/kernel/%.c
@@ -14,6 +15,7 @@ STR_PATH 	= 	src/kernel/string/%.c
 IDT_PATH 	= 	src/kernel/idt/%.c
 KEYBOARD_PATH = src/kernel/keyboard/%.c
 TIMER_PATH  =   src/kernel/timer/%.c
+SHELL_PATH  =   src/kernel/shell/%.c
 
 OBJ_PATH 	= 	obj/%.o
 
@@ -24,8 +26,9 @@ IDT_OBJS 	= 	$(patsubst $(IDT_PATH), $(OBJ_PATH), $(IDT_SRCS))
 KEYBOARD_OBJS = $(patsubst $(KEYBOARD_PATH), $(OBJ_PATH), $(KEYBOARD_SRCS))
 STR_OBJS 	= 	$(patsubst $(STR_PATH), $(OBJ_PATH), $(STR_SRCS))
 TIMER_OBJS  =   $(patsubst $(TIMER_PATH), $(OBJ_PATH), $(TIMER_SRCS))
+SHELL_OBJS  =   $(patsubst $(SHELL_PATH), $(OBJ_PATH), $(SHELL_SRCS))
 
-OBJS 		= 	$(ASM_OBJS) $(KERNEL_OBJS) $(TTY_OBJS) $(IDT_OBJS) $(KEYBOARD_OBJS) $(STR_OBJS) $(TIMER_OBJS)
+OBJS 		= 	$(ASM_OBJS) $(KERNEL_OBJS) $(TTY_OBJS) $(IDT_OBJS) $(KEYBOARD_OBJS) $(STR_OBJS) $(TIMER_OBJS) $(SHELL_OBJS)
 
 NAME 		= 	DanOs
 BIN 		= 	target/x86_64/iso/boot/kernel.bin
@@ -67,6 +70,10 @@ $(KEYBOARD_OBJS): $(OBJ_PATH): $(KEYBOARD_PATH)
 $(TIMER_OBJS): $(OBJ_PATH): $(TIMER_PATH)
 	@ $(MK) $(dir $@) && \
 	$(CC) -c $(patsubst $(OBJ_PATH), $(TIMER_PATH), $@) -o $@
+
+$(SHELL_OBJS): $(OBJ_PATH): $(SHELL_PATH)
+	@ $(MK) $(dir $@) && \
+	$(CC) -c $(patsubst $(OBJ_PATH), $(SHELL_PATH), $@) -o $@
 
 $(ASM_OBJS): $(OBJ_PATH): $(ASM_PATH)
 	@ $(MK) $(dir $@) && \
