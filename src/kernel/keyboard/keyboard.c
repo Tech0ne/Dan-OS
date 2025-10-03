@@ -88,7 +88,6 @@ void handle_keyboard_interrupt(void) {
         char keycode = ioport_in(KEYBOARD_DATA_PORT);
         if (keycode < 0 || keycode >= 128)
             return;
-        tty_putchar(keyboard_map[keycode]);
         add_to_buffer(keyboard_map[keycode]);
     }
 }

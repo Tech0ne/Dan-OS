@@ -35,6 +35,20 @@ void tty_cursor_backspace(size_t count) {
     }
 }
 
+void tty_set_cursor(size_t x, size_t y) {
+    if (x < VGA_WIDTH && y < VGA_HEIGHT) {
+        tty_column = x;
+        tty_row = y;
+    }
+}
+
+void tty_end_line(void) {
+    tty_column = 0;
+    if (++tty_row == VGA_HEIGHT)
+        tty_row = 0;
+    tty_clear_row(tty_row);
+}
+
 void tty_init(void) {
     tty_row = 0;
     tty_column = 0;
@@ -57,6 +71,13 @@ void tty_clear(void) {
     }
 }
 
+void tty_clear_row(size_t row) {
+    for (size_t x = 0; x < VGA_WIDTH; x++) {
+        const size_t index = row * VGA_WIDTH + x;
+        tty_buffer[index] = vga_entry(' ', tty_color);
+    }
+}
+
 void tty_setcolor(uint8_t color) {
     tty_color = color;
 }
@@ -73,12 +94,18 @@ void tty_putchar(char c) {
         tty_column = 0;
         if (++tty_row == VGA_HEIGHT)
             tty_row = 0;
+        tty_clear_row(tty_row);
     }
 }
 
 void tty_putstr(const char* data) {
     for (int i = 0; i < strlen(data); i++)
         tty_putchar(data[i]);
+}
+
+void tty_putstr_endl(const char* data) {
+    tty_putstr(data);
+    tty_end_line();
 }
 
 void tty_middle_screen(const char* data, size_t len) {

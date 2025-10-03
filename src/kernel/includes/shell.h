@@ -11,6 +11,7 @@
   #define SHELL_H
 
     #include <stdint.h>
+    #include <stddef.h>
 
     #define SHELL_MAX_INPUT_LENGTH 128
     // #define SHELL_MAX_ARGS 16
@@ -20,5 +21,15 @@
     void print_buffer(void);
     void print_prompt(void);
     void clear_buffer(void);
+    void init_shell(void);
+
+  /**=======================
+   *     COMMANDS
+   *========================**/
+
+    int process_command(const char* input, size_t length);
+    void cmd_echo(const char* args);
+    void cmd_clear(void);
+    void cmd_help(void);
 
 #endif //SHELL_H
