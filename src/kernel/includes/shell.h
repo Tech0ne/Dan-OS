@@ -16,6 +16,7 @@
     #define SHELL_MAX_INPUT_LENGTH 128
     // #define SHELL_MAX_ARGS 16
     #define SHELL_PROMPT "Dan-OS &> "
+    #define UNUSED(x) (void)(x) // Macro to suppress unused variable warnings
 
     void add_to_buffer(char c);
     void print_buffer(void);
@@ -28,8 +29,8 @@
    *========================**/
 
     int process_command(const char* input, size_t length);
-    void cmd_echo(const char* args);
-    void cmd_clear(void);
-    void cmd_help(void);
+    int cmd_echo(const char* args);
+    int cmd_clear(const char* args);
+    int cmd_help(const char* args);
 
 #endif //SHELL_H

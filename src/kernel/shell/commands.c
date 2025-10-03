@@ -9,47 +9,59 @@
 #include "string.h"
 #include "tty.h"
 
-void cmd_echo(const char* args) {
+int cmd_echo(const char* args) {
     tty_putstr(args);
+    return 0;
 }
 
-void cmd_clear(void) {
+int cmd_clear(const char* args) {
+    UNUSED(args);
     tty_clear();
     tty_set_cursor(0, 0);
+    return 1;
 }
 
-void cmd_help(void) {
+int cmd_help(const char* args) {
+    UNUSED(args);
     tty_putstr_endl("Available commands:");
     tty_putstr_endl("  echo [text]  - Echo the text");
     tty_putstr_endl("  clear        - Clear the screen");
     tty_putstr_endl("  help         - Show help message");
     tty_putstr_endl("  flex         - Display the welcome message");
+    return 0;
 }
 
-void cmd_flex(void) {
-    cmd_clear();
+int cmd_flex(const char* args) {
+    cmd_clear(args);
     welcome_message();
+    return 0;
 }
+
+int (*commands[])(const char*) = {
+    cmd_echo,
+    cmd_clear,
+    cmd_help,
+    cmd_flex,
+    NULL
+};
+
+const char *command_names[] = {
+    "echo",
+    "clear",
+    "help",
+    "flex",
+    NULL
+};
 
 int process_command(const char* input, size_t length) {
-    if (strncmp(input, "echo", length) == 0) {
-        cmd_echo(input);
-        return 0;
-    } else if (strncmp(input, "clear", length) == 0) {
-        cmd_clear();
-        return 1;
-    } else if (strncmp(input, "help", length) == 0) {
-        cmd_help();
-        return 0;
-    } else if (strncmp(input, "flex", length) == 0) {
-        cmd_flex();
-        return 0;
-    } else {
-        tty_putstr("Unknown command: ");
-        tty_putstr(input);
-        tty_end_line();
-        cmd_help();
-        return -1; // Command not found
+    for (size_t i = 0; commands[i] != NULL; i++) {
+        if (strncmp(input, command_names[i], length) == 0) {
+            return ((int (*)(const char*))commands[i])(input);
+        }
     }
-    return 0;
+    tty_putstr("Unknown command: ");
+    tty_putstr(input);
+    tty_end_line();
+    cmd_help(input);
+    return -1;
 }
