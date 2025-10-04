@@ -8,6 +8,9 @@
 #include "shell.h"
 #include "string.h"
 #include "tty.h"
+#include "power.h"
+
+extern void ioport_out(unsigned short port, unsigned char value);
 
 int cmd_echo(const char* args) {
     tty_putstr(args);
@@ -28,6 +31,7 @@ int cmd_help(const char* args) {
     tty_putstr_endl("  clear        - Clear the screen");
     tty_putstr_endl("  help         - Show help message");
     tty_putstr_endl("  flex         - Display the welcome message");
+    tty_putstr_endl("  poweroff     - Shutdown the system");
     return 0;
 }
 
@@ -37,11 +41,18 @@ int cmd_flex(const char* args) {
     return 0;
 }
 
+int cmd_poweroff(const char* args) {
+    UNUSED(args);
+    poweroff();
+    return 0;
+}
+
 int (*commands[])(const char*) = {
     cmd_echo,
     cmd_clear,
     cmd_help,
     cmd_flex,
+    cmd_poweroff,
     NULL
 };
 
@@ -50,10 +61,14 @@ const char *command_names[] = {
     "clear",
     "help",
     "flex",
+    "poweroff",
     NULL
 };
 
 int process_command(const char* input, size_t length) {
+    if (length == 0) {
+        return 0; // Empty command
+    }
     for (size_t i = 0; commands[i] != NULL; i++) {
         if (strncmp(input, command_names[i], length) == 0) {
             return ((int (*)(const char*))commands[i])(input);
