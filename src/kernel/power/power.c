@@ -48,22 +48,22 @@ int init_acpi(void) {
     // Find RSDP
     uint8_t* rsdp_ptr = find_rsdp();
     if (!rsdp_ptr) {
-        tty_putstr_endl("/!\\ RSDP not found");
+        print_error("/!\\ RSDP not found");
         return -1;
     }
     struct rsdp_descriptor* rsdp = (struct rsdp_descriptor*)rsdp_ptr;
     // Validate RSDP checksum
     if (!validate_checksum((uint8_t*)rsdp, sizeof(struct rsdp_descriptor))) {
-        tty_putstr_endl("/!\\ RSDP checksum invalid");
+        print_error("/!\\ RSDP checksum invalid");
         return -1;
     }
     struct acpi_sdt_header* rsdt = (struct acpi_sdt_header*)(uint64_t)rsdp->rsdt_address;
     if (strncmp(rsdt->signature, "RSDT", 4) != 0) {
-        tty_putstr_endl("/!\\ RSDT signature invalid");
+        print_error("/!\\ RSDT signature invalid");
         return -1;
     }
     if (!validate_checksum((uint8_t*)rsdt, rsdt->length)) {
-        tty_putstr_endl("/!\\ RSDT checksum invalid");
+        print_error("/!\\ RSDT checksum invalid");
         return -1;
     }
 
@@ -77,11 +77,11 @@ int init_acpi(void) {
         }
     }
     if (!fadt_table) {
-        tty_putstr_endl("/!\\ FADT not found");
+        print_error("/!\\ FADT not found");
         return -1;
     }
     if (!validate_checksum((uint8_t*)fadt_table, fadt_table->header.length)) {
-        tty_putstr_endl("/!\\ FADT checksum invalid");
+        print_error("/!\\ FADT checksum invalid");
         return -1;
     }
     acpi_initialized = 1;
@@ -90,7 +90,7 @@ int init_acpi(void) {
 
 void acpi_poweroff(void) {
     if (!acpi_initialized || !fadt_table) {
-        tty_putstr_endl("/!\\ ACPI not initialized, trying legacy methods");
+        print_error("/!\\ ACPI not initialized, trying legacy methods");
         legacy_poweroff();
         return;
     }
@@ -120,7 +120,7 @@ void acpi_poweroff(void) {
         ioport_out(fadt_table->pm1b_control_block + 1, (shutdown_value >> 8) & 0xFF);
     }
     // If ACPI didn't work, fall back to legacy methods
-    tty_putstr_endl("/!\\ ACPI shutdown failed, trying legacy methods");
+    print_error("/!\\ ACPI shutdown failed, trying legacy methods");
     legacy_poweroff();
 }
 
@@ -150,7 +150,7 @@ void legacy_poweroff(void) {
     } while (temp & 0x02);
     ioport_out(0x64, 0xFE); // Reset system
     // If all else fails, halt
-    tty_putstr_endl("/!\\All shutdown methods failed.");
+    print_error("/!\\All shutdown methods failed.");
 }
 
 void poweroff(void) {

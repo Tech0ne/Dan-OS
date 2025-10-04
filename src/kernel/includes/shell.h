@@ -15,12 +15,9 @@
 
     #define SHELL_MAX_INPUT_LENGTH 128
     // #define SHELL_MAX_ARGS 16
-    #define SHELL_PROMPT "Dan-OS &> "
     #define UNUSED(x) (void)(x) // Macro to suppress unused variable warnings
 
     void add_to_buffer(char c);
-    void print_buffer(void);
-    void print_prompt(void);
     void clear_buffer(void);
     void init_shell(void);
 

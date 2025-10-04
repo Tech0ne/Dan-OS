@@ -74,8 +74,8 @@ int process_command(const char* input, size_t length) {
             return ((int (*)(const char*))commands[i])(input);
         }
     }
-    tty_putstr("Unknown command: ");
-    tty_putstr(input);
+    putstr_error("Unknown command: ");
+    putstr_error(input);
     tty_end_line();
     cmd_help(input);
     return -1;

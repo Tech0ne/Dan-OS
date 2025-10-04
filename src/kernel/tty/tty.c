@@ -114,3 +114,37 @@ void tty_middle_screen(const char* data, size_t len) {
     for (int i = 0; i < len; i++)
         tty_putchar_at(data[i], tty_color, x + i, y);
 }
+
+void welcome_message(void) {
+    tty_setcolor(PRINT_COLOR_DANOS);
+    tty_putstr_endl("    ____                    ____  _____");
+    tty_putstr_endl("   / __ \\____ _____        / __ \\/ ___/");
+    tty_putstr_endl("  / / / / __ `/ __ \\______/ / / /\\__ \\");
+    tty_putstr_endl(" / /_/ / /_/ / / / /_____/ /_/ /___/ /");
+    tty_putstr_endl("/_____/\\__,_/_/ /_/      \\____//____/");
+    tty_putstr_endl("");
+    tty_setcolor(PRINT_COLOR_DEFAULT);
+}
+
+void print_prompt(void) {
+    tty_setcolor(PRINT_COLOR_PROMPT); // Light blue color
+    tty_putstr(SHELL_PROMPT);
+    tty_setcolor(PRINT_COLOR_DEFAULT); // Reset to default color
+}
+
+void print_default(const char* input_buffer) {
+    tty_setcolor(PRINT_COLOR_DEFAULT);
+    tty_putstr_endl(input_buffer);
+}
+
+void putstr_error(const char* input_buffer) {
+    tty_setcolor(PRINT_COLOR_ERROR);
+    tty_putstr(input_buffer);
+    tty_setcolor(PRINT_COLOR_DEFAULT);
+}
+
+void print_error(const char* input_buffer) {
+    tty_setcolor(PRINT_COLOR_ERROR);
+    tty_putstr_endl(input_buffer);
+    tty_setcolor(PRINT_COLOR_DEFAULT);
+}

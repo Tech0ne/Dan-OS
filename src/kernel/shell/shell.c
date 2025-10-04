@@ -49,14 +49,6 @@ void add_to_buffer(char c) {
     }
 }
 
-void print_buffer(void) {
-    tty_putstr(input_buffer);
-}
-
-void print_prompt(void) {
-    tty_putstr(SHELL_PROMPT);
-}
-
 void clear_buffer(void) {
     memset(input_buffer, 0, sizeof(input_buffer));
     buffer_index = 0;

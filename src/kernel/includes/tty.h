@@ -8,6 +8,8 @@
 	#include <stddef.h>
 	#include <stdint.h>
 
+    #define SHELL_PROMPT "Dan-OS &> "
+
 	void tty_init(void);
     void tty_clear(void);
 	void tty_clear_row(size_t row);
@@ -21,6 +23,10 @@
 	void tty_set_cursor(size_t x, size_t y);
 	void tty_end_line(void);
 
+	void print_prompt(void);
+	void print_default(const char* input_buffer);
+	void print_error(const char* input_buffer);
+	void putstr_error(const char* input_buffer);
 	void welcome_message(void);
 
 #endif //PRINT_H
