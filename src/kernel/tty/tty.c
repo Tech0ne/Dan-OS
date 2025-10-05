@@ -183,6 +183,9 @@ void welcome_message(void) {
     tty_putstr_endl(" / /_/ / /_/ / / / /_____/ /_/ /___/ /");
     tty_putstr_endl("/_____/\\__,_/_/ /_/      \\____//____/");
     tty_putstr_endl("");
+    tty_putstr_endl("version 0.1.1");
+    tty_putstr_endl("created by dan13615");
+    tty_putstr_endl("");
     tty_setcolor(PRINT_COLOR_DEFAULT);
 }
 
