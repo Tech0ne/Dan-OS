@@ -13,6 +13,7 @@
 	void tty_init(void);
     void tty_clear(void);
 	void tty_clear_row(size_t row);
+	void tty_scroll(void);
 	void tty_setcolor(uint8_t color);
     void tty_putchar(char c);
 	void tty_putstr(const char* data);
@@ -22,6 +23,10 @@
 	void tty_cursor_backspace(size_t count);
 	void tty_set_cursor(size_t x, size_t y);
 	void tty_end_line(void);
+
+	// Cursor control functions
+	void tty_enable_cursor(void);
+	void tty_disable_cursor(void);
 
 	void print_prompt(void);
 	void print_default(const char* input_buffer);
